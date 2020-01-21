@@ -1,38 +1,25 @@
-def trailing_zeros(bin_string):
-    zeroes = 0
-    idx = len(bin_string) - 1
-    while idx > 0 and bin_string[idx] == '0':
-        idx -= 1
-        zeroes += 1
-    return zeroes
+from re import search
 
 
-def shift(value, shifts):
-    return value >> shifts
+def trailing_binary_zeros(num_pellets):
+    bin_string = '{0:b}'.format(num_pellets)
+    m = search(r'[1-9][0]+$', bin_string)
+    if m is not None:
+        return len(m.group(0)) - 1
+    else:
+        return 0
 
 
 def solution(pellets):
-    if len(pellets) > 309:
-        return None
-    try:
-        int_pellets = int(pellets)
-        steps = 0
-        while int_pellets > 1:
-            bin_pellets = '{0:b}'.format(int_pellets)
-            bin_pellets_p1 = '{0:b}'.format(int_pellets + 1)
-            bin_pellets_m1 = '{0:b}'.format(int_pellets - 1)
+    int_pellets = int(pellets)
+    steps = 0
+    while int_pellets > 1:
+        if int_pellets == 3:
+            steps += 2
+            int_pellets = 1
+        else:
+            shifts, delta = max([(trailing_binary_zeros(int_pellets + delta), delta) for delta in [-1, 0, 1]])
+            int_pellets = (int_pellets + delta) >> shifts
+            steps += abs(delta) + shifts
 
-            zeroes = trailing_zeros(bin_pellets)
-            zeroes_p1 = trailing_zeros(bin_pellets_p1)
-            zeroes_m1 = trailing_zeros(bin_pellets_m1)
-
-            z, int_pellets, s = max((zeroes, shift(int_pellets, zeroes), zeroes),
-                                    (zeroes_p1, shift(int_pellets + 1, zeroes_p1), zeroes_p1 + 1),
-                                    (zeroes_m1, shift(int_pellets - 1, zeroes_m1), zeroes_m1 + 1),
-                                    )
-            steps += s
-
-        return steps
-
-    except ValueError:
-        return None
+    return steps
