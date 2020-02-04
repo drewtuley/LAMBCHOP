@@ -1,4 +1,4 @@
-import fuel_injection
+from FuelInjection import fuel_injection
 
 if __name__ == "__main__":
     for test in [(2, '3'),

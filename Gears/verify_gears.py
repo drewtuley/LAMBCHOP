@@ -1,4 +1,4 @@
-import gears
+from Gears import gears
 
 tests = [
     ((32, 12), [10, 14, 17, 20]),

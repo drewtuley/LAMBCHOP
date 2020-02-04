@@ -1,4 +1,4 @@
-import queue_to_do
+from SecurityQueue import queue_to_do
 
 tests = [
     (118, (2, 11)),

@@ -1,4 +1,4 @@
-import knight_moves
+from KnightMoves import knight_moves
 
 tests = [
     (1, (19, 36)),
