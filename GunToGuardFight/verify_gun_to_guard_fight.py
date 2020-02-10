@@ -1,4 +1,4 @@
-from GunToGuardFight import gun_to_guard_fight
+from . import gun_to_guard_fight
 
 if __name__ == '__main__':
     tests = [
