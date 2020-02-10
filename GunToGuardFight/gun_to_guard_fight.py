@@ -44,7 +44,77 @@ def calc_bottom_right_gradients(dims, gloc, ploc):
 def can_reflect_top_wall(dims, ploc, gloc, max_distance):
     if ploc[0] != gloc[0]:
         x = (gloc[0] - ploc[0]) ** 2
+        y = (dims[1] - gloc[1] + dims[1] - ploc[1]) ** 2
+        dist = sqrt(x + y)
+        return dist <= max_distance
+    else:
+        return False
+
+
+def can_reflect_top_then_bottom(dims, ploc, gloc, max_distance):
+    if ploc[0] != gloc[0]:
+        x = (gloc[0] - ploc[0]) ** 2
+        y = (gloc[1] + dims[1] + dims[1] - ploc[1]) ** 2
+        dist = sqrt(x + y)
+        return dist <= max_distance
+    else:
+        return False
+
+
+def can_reflect_bottom_wall(dims, ploc, gloc, max_distance):
+    if ploc[0] != gloc[0]:
+        x = (gloc[0] - ploc[0]) ** 2
         y = (gloc[1] + ploc[1]) ** 2
+        dist = sqrt(x + y)
+        return dist <= max_distance
+    else:
+        return False
+
+
+def can_reflect_bottom_then_top(dims, ploc, gloc, max_distance):
+    if ploc[0] != gloc[0]:
+        x = (gloc[0] - ploc[0]) ** 2
+        y = (dims[1] - gloc[1] + dims[1] + ploc[1]) ** 2
+        dist = sqrt(x + y)
+        return dist <= max_distance
+    else:
+        return False
+
+
+def can_reflect_left_wall(dims, ploc, gloc, max_distance):
+    if ploc[1] != gloc[1]:
+        x = (gloc[0] + ploc[0]) ** 2
+        y = (gloc[1] - ploc[1]) ** 2
+        dist = sqrt(x + y)
+        return dist <= max_distance
+    else:
+        return False
+
+
+def can_reflect_left_then_right(dims, ploc, gloc, max_distance):
+    if ploc[1] != gloc[1]:
+        x = (ploc[0] + dims[0] + dims[0] - gloc[0]) ** 2
+        y = (gloc[1] - ploc[1]) ** 2
+        dist = sqrt(x + y)
+        return dist <= max_distance
+    else:
+        return False
+
+
+def can_reflect_right_wall(dims, ploc, gloc, max_distance):
+    if ploc[1] != gloc[1]:
+        x = (dims[0] - gloc[0] + dims[0] - ploc[0]) ** 2
+        y = (gloc[1] - ploc[1]) ** 2
+        dist = sqrt(x + y)
+        return dist <= max_distance
+    else:
+        return False
+
+
+def can_reflect_right_then_left(dims, ploc, gloc, max_distance):
+    if ploc[1] != gloc[1]:
+        x = (gloc[0] + dims[0] - ploc[0] + dims[0]) ** 2
+        y = (gloc[1] - ploc[1]) ** 2
         dist = sqrt(x + y)
         return dist <= max_distance
     else:
@@ -139,39 +209,9 @@ def can_reflect_right_then_bottom(dims, ploc, gloc, max_distance):
         return False
 
 
-def can_reflect_bottom_wall(dims, ploc, gloc, max_distance):
-    if ploc[0] != gloc[0]:
-        x = (gloc[0] - ploc[0]) ** 2
-        y = (dims[1] - gloc[1] + dims[1] - ploc[1]) ** 2
-        dist = sqrt(x + y)
-        return dist <= max_distance
-    else:
-        return False
-
-
-def can_reflect_left_wall(dims, ploc, gloc, max_distance):
-    if ploc[1] != gloc[1]:
-        x = (gloc[0] + ploc[0]) ** 2
-        y = (gloc[1] - ploc[1]) ** 2
-        dist = sqrt(x + y)
-        return dist <= max_distance
-    else:
-        return False
-
-
-def can_reflect_right_wall(dims, ploc, gloc, max_distance):
-    if ploc[1] != gloc[1]:
-        x = (dims[0] - gloc[0] + dims[0] - ploc[0]) ** 2
-        y = (gloc[1] - ploc[1]) ** 2
-        dist = sqrt(x + y)
-        return dist <= max_distance
-    else:
-        return False
-
-
 def solution(dims, player_loc, guard_loc, distance):
     hit_count = 1  # assume a direct shot always
-    if can_reflect_top_wall(dims, player_loc, guard_loc, distance):
+    if can_reflect_bottom_wall(dims, player_loc, guard_loc, distance):
         hit_count += 1
     if can_reflect_bottom_wall(dims, player_loc, guard_loc, distance):
         hit_count += 1
@@ -197,13 +237,23 @@ def solution(dims, player_loc, guard_loc, distance):
     if can_reflect_right_then_bottom(dims, player_loc, guard_loc, distance):
         hit_count += 1
 
+    if can_reflect_top_then_bottom(dims, player_loc, guard_loc, distance):
+        hit_count += 1
+    if can_reflect_bottom_then_top(dims, player_loc, guard_loc, distance):
+        hit_count += 1
+    if can_reflect_right_then_left(dims, player_loc, guard_loc, distance):
+        hit_count += 1
+    if can_reflect_left_then_right(dims, player_loc, guard_loc, distance):
+        hit_count += 1
+
     return hit_count
 
 
 if __name__ == '__main__':
     tests = [
         ([3, 2], [1, 1], [2, 1], 4, 7),
-        ([300, 275], [150, 150], [185, 100], 500, 9)
+        ([300, 275], [150, 150], [185, 100], 500, 9),
+        ([300, 275], [150, 150], [185, 100], 700, 13),
     ]
 
     for dims, player_loc, guard_loc, distance, shots in tests:
