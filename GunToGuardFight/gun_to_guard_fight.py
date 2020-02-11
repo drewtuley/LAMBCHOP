@@ -56,7 +56,10 @@ def can_reflect_top_then_bottom(dims, ploc, gloc, max_distance):
         reflections = 0
         x = (gloc[0] - ploc[0]) ** 2
         for internals in range(1, 1250):
-            y = (gloc[1] + (dims[1] * internals) + dims[1] - ploc[1]) ** 2
+            if internals % 2 == 1:
+                y = ((dims[1] - ploc[1]) + (dims[1] * internals) + gloc[1]) ** 2
+            else:
+                y = ((dims[1] - ploc[1]) + (dims[1] * internals) + (dims[1] - gloc[1])) ** 2
             dist = sqrt(x + y)
             if dist <= max_distance:
                 reflections += 1
@@ -81,7 +84,10 @@ def can_reflect_bottom_then_top(dims, ploc, gloc, max_distance):
         x = (gloc[0] - ploc[0]) ** 2
         reflections = 0
         for internals in range(1, 1250):
-            y = (dims[1] - gloc[1] + (internals * dims[1]) + ploc[1]) ** 2
+            if internals % 2 == 1:
+                y = (ploc[1] + (internals * dims[1]) + (dims[1] - gloc[1])) ** 2
+            else:
+                y = (ploc[1] + (internals * dims[1]) + gloc[1]) ** 2
             dist = sqrt(x + y)
             if dist <= max_distance:
                 reflections += 1
@@ -106,7 +112,10 @@ def can_reflect_left_then_right(dims, ploc, gloc, max_distance):
         y = (gloc[1] - ploc[1]) ** 2
         reflections = 0
         for internals in range(1, 1250):
-            x = (ploc[0] + (internals * dims[0]) + dims[0] - gloc[0]) ** 2
+            if internals % 2 == 1:
+                x = (ploc[0] + (internals * dims[0]) + (dims[0] - gloc[0])) ** 2
+            else:
+                x = (ploc[0] + (internals * dims[0]) + gloc[0]) ** 2
             dist = sqrt(x + y)
             if dist <= max_distance:
                 reflections += 1
@@ -131,7 +140,10 @@ def can_reflect_right_then_left(dims, ploc, gloc, max_distance):
         reflections = 0
         y = (gloc[1] - ploc[1]) ** 2
         for internals in range(1, 1250):
-            x = (gloc[0] + dims[0] - ploc[0] + (internals * dims[0])) ** 2
+            if internals % 2 == 1:
+                x = ((dims[0] - ploc[0]) + (internals * dims[0]) + gloc[0]) ** 2
+            else:
+                x = ((dims[0] - ploc[0]) + (internals * dims[0]) + (dims[0] - gloc[0])) ** 2
             dist = sqrt(x + y)
             if dist <= max_distance:
                 reflections += 1
@@ -145,7 +157,7 @@ def can_reflect_top_then_right(dims, ploc, gloc, max_distance):
     g_grad, g_grad_x, p_grad, p_grad_x = cal_top_right_gradients(dims, gloc, ploc)
     if g_grad < p_grad:
         x = (p_grad_x + g_grad_x) ** 2
-        y = (dims[1] - ploc[0] + dims[1] - gloc[1]) ** 2
+        y = (dims[1] - ploc[1] + dims[1] - gloc[1]) ** 2
         dist = sqrt(x + y)
         return dist <= max_distance
     else:
@@ -156,7 +168,7 @@ def can_reflect_right_then_top(dims, ploc, gloc, max_distance):
     g_grad, g_grad_x, p_grad, p_grad_x = cal_top_right_gradients(dims, gloc, ploc)
     if g_grad > p_grad:
         x = (p_grad_x + g_grad_x) ** 2
-        y = (dims[1] - ploc[0] + dims[1] - gloc[1]) ** 2
+        y = (dims[1] - ploc[1] + dims[1] - gloc[1]) ** 2
         dist = sqrt(x + y)
         return dist <= max_distance
     else:
@@ -167,7 +179,7 @@ def can_reflect_top_then_left(dims, ploc, gloc, max_distance):
     g_grad, g_grad_x, p_grad, p_grad_x = cal_top_left_gradients(dims, gloc, ploc)
     if g_grad < p_grad:
         x = (p_grad_x + g_grad_x) ** 2
-        y = (dims[1] - ploc[0] + dims[1] - gloc[1]) ** 2
+        y = (dims[1] - ploc[1] + dims[1] - gloc[1]) ** 2
         dist = sqrt(x + y)
         return dist <= max_distance
     else:
@@ -178,7 +190,7 @@ def can_reflect_left_then_top(dims, ploc, gloc, max_distance):
     g_grad, g_grad_x, p_grad, p_grad_x = cal_top_left_gradients(dims, gloc, ploc)
     if g_grad > p_grad:
         x = (p_grad_x + g_grad_x) ** 2
-        y = (dims[1] - ploc[0] + dims[1] - gloc[1]) ** 2
+        y = (dims[1] - ploc[1] + dims[1] - gloc[1]) ** 2
         dist = sqrt(x + y)
         return dist <= max_distance
     else:
@@ -189,7 +201,7 @@ def can_reflect_bottom_then_left(dims, ploc, gloc, max_distance):
     g_grad, g_grad_x, p_grad, p_grad_x = calc_bottom_left_gradients(gloc, ploc)
     if g_grad < p_grad:
         x = (p_grad_x + g_grad_x) ** 2
-        y = (ploc[0] + gloc[1]) ** 2
+        y = (ploc[1] + gloc[1]) ** 2
         dist = sqrt(x + y)
         return dist <= max_distance
     else:
@@ -200,7 +212,7 @@ def can_reflect_left_then_bottom(dims, ploc, gloc, max_distance):
     g_grad, g_grad_x, p_grad, p_grad_x = calc_bottom_left_gradients(gloc, ploc)
     if g_grad > p_grad:
         x = (p_grad_x + g_grad_x) ** 2
-        y = (ploc[0] + gloc[1]) ** 2
+        y = (ploc[1] + gloc[1]) ** 2
         dist = sqrt(x + y)
         return dist <= max_distance
     else:
@@ -211,7 +223,7 @@ def can_reflect_bottom_then_right(dims, ploc, gloc, max_distance):
     g_grad, g_grad_x, p_grad, p_grad_x = calc_bottom_right_gradients(dims, gloc, ploc)
     if g_grad < p_grad:
         x = (p_grad_x + g_grad_x) ** 2
-        y = (ploc[0] + gloc[1]) ** 2
+        y = (ploc[1] + gloc[1]) ** 2
         dist = sqrt(x + y)
         return dist <= max_distance
     else:
@@ -222,7 +234,7 @@ def can_reflect_right_then_bottom(dims, ploc, gloc, max_distance):
     g_grad, g_grad_x, p_grad, p_grad_x = calc_bottom_right_gradients(dims, gloc, ploc)
     if g_grad > p_grad:
         x = (p_grad_x + g_grad_x) ** 2
-        y = (ploc[0] + gloc[1]) ** 2
+        y = (ploc[1] + gloc[1]) ** 2
         dist = sqrt(x + y)
         return dist <= max_distance
     else:
@@ -270,8 +282,8 @@ def solution(dims, player_loc, guard_loc, distance):
     hit_count += refs
     refs = can_reflect_right_then_left(dims, player_loc, guard_loc, distance)
     hit_count += refs
-    if can_reflect_left_then_right(dims, player_loc, guard_loc, distance):
-        hit_count += 1
+    refs = can_reflect_left_then_right(dims, player_loc, guard_loc, distance)
+    hit_count += refs
 
     return hit_count
 
@@ -280,21 +292,21 @@ if __name__ == '__main__':
 
     # Test1 = 7
     # Test2 = 9
-    # from manual testing <=50
+    # from manual testing <=60
     # Test4 = 0 i.e. no possible result
     # Test5 = 1 i.e. only a direct shot
-    # Test6 = 17 ...
-    # Test 6 = 17 [900,700], [853,172], [75,600], 2000
-
-    # Test7 = 12 ...
+    # Test6 = 17 [900,700], [853,172], [75,600], 2000
+    # Test7 = 12 [200,400], [20,40],[10,2],500
     tests = [
+        ([20, 10], [5, 7], [14, 3], 25, 10),
         ([3, 2], [1, 1], [2, 1], 4, 7),
         ([300, 275], [150, 150], [185, 100], 500, 9),
         ([300, 275], [150, 150], [185, 100], 700, 13),
         ([400, 400], [200, 200], [201, 200], 1000, 7),
         ([100, 100], [50, 50], [60, 50], 10, 1),
-        ([100, 10], [20, 5], [80, 5], 1000, 10),
-        ([900, 700], [853, 172], [75, 600], 2000, 17)
+        ([100, 10], [20, 5], [80, 5], 1000, 203),
+        ([900, 700], [853, 172], [75, 600], 2000, 17),
+        ([200, 400], [20, 40], [10, 2], 500, 12)
     ]
 
     for dims, player_loc, guard_loc, distance, shots in tests:
