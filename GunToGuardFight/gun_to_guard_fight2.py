@@ -4,13 +4,18 @@ from math import sqrt
 def solution(room_space, player_location, guard_location, beam_range):
     hits = 0
 
-    corner_slope_1 =float(room_space[1] - player_location[1]) / float(room_space[0] - player_location[0])
-    corner_slope_2 = float(0-player_location[1]) / float(room_space[0] - player_location[0])
-    corner_slope_3 = float(room_space[1] - player_location[1]) / float(player_location[0])
-    corner_slope_4 = float(-player_location[1]) / float(player_location[0])
+    # calculate the slopes (y/x) from the player to each of the four room corners
+    # comparing this list to the shot slope calculated later should avoid corner shots....(if there are any)
+    corner_slopes = [float(room_space[1] - player_location[1]) / float(room_space[0] - player_location[0]),
+                     float(0 - player_location[1]) / float(room_space[0] - player_location[0]),
+                     float(room_space[1] - player_location[1]) / float(player_location[0]),
+                     float(0 - player_location[1]) / float(player_location[0])]
 
-    x_range = int(beam_range / room_space[0]) + 1
-    y_range = int(beam_range / room_space[1]) + 1
+    x_range = int(beam_range / room_space[0]) + 2
+    y_range = int(beam_range / room_space[1]) + 2
+    # determine the guard's position in a matrix of reflected rooms around the play space
+    # that way, any straight line from player to guard (across the matrix) will be the same as if internally reflected
+    # in the play space (that's the theory anyway)
     for y in range(-y_range, y_range):
         for x in range(-x_range, x_range):
             if y % 2 == 0:
@@ -23,14 +28,14 @@ def solution(room_space, player_location, guard_location, beam_range):
             else:
                 reflected_guard_xpos = room_space[0] * (x + 1) - guard_location[0]
 
-            xdiff = player_location[0] - reflected_guard_xpos
-            ydiff = player_location[1] - reflected_guard_ypos
+            x_delta = player_location[0] - reflected_guard_xpos
+            y_delta = player_location[1] - reflected_guard_ypos
 
-            if (xdiff != 0 and ydiff != 0) or (x == 0 and y == 0):
-                if xdiff != 0 and ydiff != 0:
-                    dy = float(ydiff) / float(xdiff)
-                if dy not in [corner_slope_1, corner_slope_2, corner_slope_3, corner_slope_4]:
-                    hypot = sqrt(xdiff ** 2 + ydiff ** 2)
+            if (x_delta != 0 and y_delta != 0) or (x == 0 and y == 0):
+                if x_delta != 0 and y_delta != 0:
+                    dy = float(y_delta) / float(x_delta)
+                if dy not in corner_slopes:
+                    hypot = sqrt(x_delta ** 2 + y_delta ** 2)
                     if hypot <= beam_range:
                         hits += 1
     return hits
