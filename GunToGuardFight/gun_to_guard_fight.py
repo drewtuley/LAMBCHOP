@@ -130,6 +130,7 @@ def count_reflect_bottom_then_top_with_left(dims, ploc, gloc, max_distance):
     else:
         return 0
 
+
 def count_reflect_bottom_then_top_with_right(dims, ploc, gloc, max_distance):
     if abs(ploc[0] - gloc[0]) >= 1 and ploc[0] < gloc[0]:
         x = (gloc[0] + ploc[0]) ** 2
@@ -146,6 +147,7 @@ def count_reflect_bottom_then_top_with_right(dims, ploc, gloc, max_distance):
                 return reflections
     else:
         return 0
+
 
 def count_reflect_left_then_right(dims, ploc, gloc, max_distance):
     if abs(ploc[1] - gloc[1]) >= 1:
@@ -323,7 +325,6 @@ def solution(dims, player_loc, guard_loc, distance):
     refs = count_reflect_bottom_then_top_with_right(dims, player_loc, guard_loc, distance)
     hit_count += refs
 
-
     return hit_count
 
 
@@ -337,15 +338,15 @@ if __name__ == '__main__':
     # Test6 = 17 [900,700], [853,172], [75,600], 2000
     # Test7 = 12 [200,400], [20,40],[10,2],500
     tests = [
-        ([20, 10], [5, 7], [14, 3], 25, 10),
-        ([3, 2], [1, 1], [2, 1], 4, 7),
-        ([300, 275], [150, 150], [185, 100], 500, 9),
-        ([300, 275], [150, 150], [185, 100], 700, 17),
-        ([400, 400], [200, 200], [201, 200], 1000, 11),
-        ([100, 100], [50, 50], [60, 50], 10, 1),
-        ([100, 10], [20, 5], [80, 5], 1000, 399),
-        ([900, 700], [853, 172], [75, 600], 2000, 17),
-        ([200, 400], [20, 40], [10, 2], 500, 12)
+        # ([20, 10], [5, 7], [14, 3], 25, 10),
+         ([3, 2], [1, 1], [2, 1], 4, 7),
+        # ([300, 275], [150, 150], [185, 100], 500, 9),
+        # ([300, 275], [150, 150], [185, 100], 700, 17),
+        # ([400, 400], [200, 200], [201, 200], 1000, 11),
+        # ([100, 100], [50, 50], [60, 50], 10, 1),
+        # ([100, 10], [20, 5], [80, 5], 1000, 399),
+        #([900, 700], [853, 172], [75, 600], 2000, 17),
+        # ([200, 400], [20, 40], [10, 2], 500, 12)
     ]
 
     for dims, player_loc, guard_loc, distance, shots in tests:
