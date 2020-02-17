@@ -24,6 +24,13 @@ def solution(room_space, player_location, guard_location, beam_range):
 
     previous_slope_hits_by_quadrant = [set(), set(), set(), set()]
 
+    for x, y in [(room_space[0] - player_location[0], room_space[1] - player_location[1]),
+                 (room_space[0] - player_location[0], 0 - player_location[1]),
+                 (0 - player_location[0], 0 - player_location[1]),
+                 (0 - player_location[0], room_space[1] - player_location[1])]:
+        quadrant = get_quadrant(x, y)
+        previous_slope_hits_by_quadrant[quadrant].add(float(y) / float(x))
+
     x_range = int(beam_range / room_space[0]) + 2
     y_range = int(beam_range / room_space[1]) + 2
     # determine the guard's position in a matrix of reflected rooms around the play space
@@ -60,19 +67,24 @@ def solution(room_space, player_location, guard_location, beam_range):
 
                 player_hypot = sqrt(reflected_player_delta_x ** 2 + reflected_player_delta_y ** 2)
                 reflected_guard_hypot = sqrt(reflected_guard_delta_x ** 2 + reflected_guard_delta_y ** 2)
-                print('Attempt gx {0:2} gy {1:2} gh {2:3}'.format(reflected_guard_xpos, reflected_guard_ypos,
-                                                          reflected_guard_hypot))
+                # print('Attempt gx {0:2} gy {1:2} gh {2:3}'.format(reflected_guard_xpos, reflected_guard_ypos,
+                #                                           reflected_guard_hypot))
 
                 if not (slope_to_guard == original_guard_slope and reflected_guard_hypot > original_guard_hypot):
                     self_hit = False
-                    if slope_to_guard is not None and slope_to_reflected_player is not None and slope_to_guard == slope_to_reflected_player and player_hypot < reflected_guard_hypot:
+                    if slope_to_guard is not None and slope_to_reflected_player is not None \
+                            and slope_to_guard == slope_to_reflected_player and player_hypot < reflected_guard_hypot:
                         self_hit = True
+                    hit_corner = False
                     quadrant = get_quadrant(reflected_guard_xpos, reflected_guard_ypos)
-                    if slope_to_guard not in previous_slope_hits_by_quadrant[quadrant]:
-                        if not self_hit and reflected_guard_hypot <= beam_range:
-                            print('Accept  gx {0:2} gy {1:2} gh {2:3}'.format(reflected_guard_xpos, reflected_guard_ypos, reflected_guard_hypot))
-                            hits += 1
-                            previous_slope_hits_by_quadrant[quadrant].add(slope_to_guard)
+                    if x != 0 and y != 0:
+                        # only check if corners are hit if we are looking outside the original play space
+                        hit_corner = slope_to_guard in previous_slope_hits_by_quadrant[quadrant]
+
+                    if not self_hit and not hit_corner and reflected_guard_hypot <= beam_range:
+                        # print('Accept  gx {0:2} gy {1:2} gh {2:3}'.format(reflected_guard_xpos, reflected_guard_ypos, reflected_guard_hypot))
+                        hits += 1
+                        previous_slope_hits_by_quadrant[quadrant].add(slope_to_guard)
     return hits
 
 
@@ -95,19 +107,19 @@ if __name__ == '__main__':
     # Test6 = 17 [900,700], [853,172], [75,600], 2000
     # Test7 = 12 [200,400], [20,40],[10,2],500
     tests = [
-        #([3, 2], [1, 1], [2, 1], 4, 7, 'Real Test 1'),
-        # ([4, 3], [3, 2], [2, 1], 5, 5, 'Corners?'),
-        # ([20, 10], [5, 7], [14, 3], 25, 11, ''),
-        # ([300, 275], [150, 150], [185, 100], 500, 9, 'Real Test 2'),
-        # ([300, 275], [150, 150], [185, 100], 700, 20, ''),
-        # ([400, 400], [200, 200], [220, 220], 28, 0, 'Real Test 4'),
-        # ([100, 100], [50, 50], [60, 50], 10, 1, 'Real Test 5'),
-        # ([100, 10], [20, 5], [80, 5], 1000, 2027, ''),
-        # ([900, 700], [853, 172], [75, 600], 2000, 17, 'Real Test 6'),
-        # ([200, 400], [20, 40], [10, 2], 500, 12, 'Real Test 7'),
-        ([2, 5], [1, 2], [1, 4], 11, 27, 'SO2'),  # I get 35 ....
-        # ([10, 10], [4, 4], [3, 3], 5000, 739323, 'xx'),
-        #([23, 10], [6, 4], [3, 2], 23, 8, 'yy')
+        ([3, 2], [1, 1], [2, 1], 4, 7, 'Real Test 1'),
+        ([4, 3], [3, 2], [2, 1], 5, 5, 'Corners?'),
+        ([20, 10], [5, 7], [14, 3], 25, 11, ''),
+        ([300, 275], [150, 150], [185, 100], 500, 9, 'Real Test 2'),
+        ([300, 275], [150, 150], [185, 100], 700, 20, ''),
+        ([400, 400], [200, 200], [220, 220], 28, 0, 'Real Test 4'),
+        ([100, 100], [50, 50], [60, 50], 10, 1, 'Real Test 5'),
+        ([100, 10], [20, 5], [80, 5], 1000, 2671, ''),
+        ([900, 700], [853, 172], [75, 600], 2000, 17, 'Real Test 6'),
+        ([200, 400], [20, 40], [10, 2], 500, 12, 'Real Test 7'),
+        ([2, 5], [1, 2], [1, 4], 11, 27, 'SO2'),
+        ([10, 10], [4, 4], [3, 3], 5000, 739323, 'xx'),
+        ([23, 10], [6, 4], [3, 2], 23, 8, 'yy')
     ]
 
     for dims, player_loc, guard_loc, distance, shots, description in tests:
